@@ -77,7 +77,7 @@ def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")    
-    kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9) 
+    kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)  # こうかとん画像
     bb_img = pg.Surface((20, 20))  # 爆弾用空のsurface
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # 爆弾円描く
     bb_img.set_colorkey((0, 0, 0))  # 四隅の黒を透過
