@@ -48,14 +48,26 @@ def game_over(screen: pg.Surface) -> None:
     time.sleep(5)
 
 
-
+def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+    """
+    サイズの異なる爆弾surfaceを要素としたリストと加速度リストを返す
+    """
+    bb_img, accs = True, True
+    accs = [a for a in range(1, 11)]
+    bb_imgs =[]  # 拡大爆弾リスト
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r))
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_img.set_colorkey((0, 0, 0))
+        bb_imgs.append(bb_img)
+    return bb_imgs, accs
 
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")    
-    kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
+    kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9) 
     bb_img = pg.Surface((20, 20))  # 爆弾用空のsurface
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # 爆弾円描く
     bb_img.set_colorkey((0, 0, 0))  # 四隅の黒を透過
@@ -86,7 +98,13 @@ def main():
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
-        bb_rct.move_ip(vx, vy)  # 爆弾移動
+        bb_imgs, bb_accs = init_bb_imgs()
+        avx = vx*bb_accs[min(tmr//500, 9)]
+        avy = vy*bb_accs[min(tmr//500, 9)]
+        bb_img = bb_imgs[min(tmr//500, 9)]
+        bb_rct.move_ip(avx, avy)  # 爆弾移動
+        g_rct = bb_img.get_rect()
+        bb_rct.width, bb_rct.height= g_rct.width, g_rct.height
         yoko, tate = check_bound(bb_rct)
         if not yoko:
             vx *= -1
